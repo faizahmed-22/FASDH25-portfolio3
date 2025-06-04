@@ -5,16 +5,24 @@ import plotly.express as px
 
 # Load the CSV file
 df = pd.read_csv("data/dataframes/length/length.csv")
+df2= pd.read_csv("data/dataframes/length/length-year-month.csv")
 
 # Step 1: Filter by word count (100 or more words)
 df = df[df['length'] >= 100]
 
 # Step 2: Convert year, month, day to datetime, taken from ChatGPT
 df['date'] = pd.to_datetime(df[['year', 'month', 'day']])
+# Also convert year and month to datetime objects for filtering and sorting df2
+df2['date'] = pd.to_datetime(df2[['year', 'month',]].assign(day=1))
+
 
 # Step 3: Filter by date (Sep 7, 2023 or later)
 cutoff_date = pd.to_datetime("2023-9-7")
 df = df[df['date'] >= cutoff_date]
+
+# Filter df2 to include data from September 2023 onwards
+cutoff_date_df2 = pd.to_datetime("2023-9-7")
+df2 = df2[df2['date'] >= cutoff_date_df2]
 
 
 # Step 4: Create new data for article counts, taken from Amnas code in excercise 14.2 and ChatGPT
@@ -48,15 +56,32 @@ fig_bar = px.bar(
     y='Article Count',
     title=' Articles Published Per Day of the Week',
     color='Article Count',
-    color_continuous_scale='armyrose')
+    color_continuous_scale='Blues')
 fig_bar.show()
 
-#Step 9: Save histogram and bar as an HTML file
+#Step 9: create continuous bar graph vetween article length and month
+# Create the month_label for the sorted, filtered data
+df2 = df2.sort_values(by='date')
+df2['month_label'] = df2['date'].dt.strftime('%b %Y')
+
+fig_length = px.bar(
+    df2,  # Use the filtered and sorted DataFrame
+    x='month_label',
+    y='length-sum',
+    title='Average Article Length by Month (Sep 2023 Onwards)',
+    labels={'month_label': 'Month', 'length-mean': 'Average Length (words)'},
+    color='length-mean',
+    color_continuous_scale='Greens'
+)
+fig_length.show()
+
+#Step 10: Save histogram and bar as an HTML file
 fig_hist.write_html("article_count_histogram.html")
 print("Histogram saved to 'article_count_histogram.html")
 fig_bar.write_html("weekday_bar_chart.html")
 print("Bar chart saved to 'weekday_bar_chart.html'")
-
+fig_length.write_html("date_article_length.html")
+print("Bar chart saved to 'monthly_article_length_chart.html'")
 
 
 
