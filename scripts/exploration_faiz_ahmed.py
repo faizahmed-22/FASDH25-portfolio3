@@ -58,7 +58,7 @@ fig2.show()
 
 #visualisation is looking better but needs better filter
 #what else can we do???
-#maybe filter the amount of words around 200 or more words since google says its around how many words is needed for articless to be meaningful
+#maybe filter the amount of words around 200 or more words since WOrdCount says its around how many words is needed for articless to be meaningful
 
 df = df[df['length'] >= 200]
 
