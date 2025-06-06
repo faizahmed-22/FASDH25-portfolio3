@@ -1,3 +1,8 @@
+# The script might give a traceback error
+# due to removal of data folder in the zipped copied file
+# also because while finalizing the file, we put all the scripts into a collective folder
+# the script works fine without these traceback path errors
+
 # Loading the pandas library
 import pandas as pd
 
